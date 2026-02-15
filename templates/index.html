@@ -1,0 +1,80 @@
+<!-- HTML5 document type declaration - tells browser this is a modern HTML5 page -->
+<!DOCTYPE html>
+<!-- Root HTML element with language set to English for accessibility and SEO -->
+<html lang="en">
+<head>
+  <!-- Character encoding set to UTF-8 to support all Unicode characters -->
+  <meta charset="UTF-8" />
+  <!-- Viewport meta tag for responsive design on mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Page title that appears in browser tab -->
+  <title>ASCII Art Web</title>
+  <!-- Embedded CSS styles for page layout and appearance -->
+  <style>
+    /* Body styling: sans-serif font for readability, 2rem margin for spacing around content */
+    body { font-family: sans-serif; margin: 2rem; }
+    /* Textarea styling: full width up to 900px max, 120px height for input area */
+    textarea { width: 100%; max-width: 900px; height: 120px; }
+    /* Row class for form sections: 1rem vertical margin for spacing between elements */
+    .row { margin: 1rem 0; }
+    /* Pre-formatted text styling: light gray background, padding, preserve whitespace, horizontal scroll if needed */
+    pre { background: #f3f3f3; padding: 1rem; white-space: pre; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <!-- Main heading for the page -->
+  <h1>ASCII Art Web</h1>
+
+  <!-- Form that submits to /ascii-art endpoint using POST method -->
+  <form method="POST" action="/ascii-art">
+    <!-- Container div for text input section -->
+    <div class="row">
+      <!-- Label for the textarea, linked by 'for' attribute to textarea id -->
+      <label for="text">Text</label><br />
+      <!-- Textarea for user input: id links to label, name is form field name, required makes it mandatory -->
+      <!-- {{.Input}} is Go template syntax that displays the previously submitted text -->
+      <textarea id="text" name="text" required>{{.Input}}</textarea>
+    </div>
+
+    <!-- Container div for banner selection section -->
+    <div class="row">
+      <!-- Bold label for the radio button group -->
+      <strong>Banner</strong><br />
+      <!-- Label wrapping first radio button for standard banner -->
+      <label>
+        <!-- Radio button: name groups all banner options, value is sent to server -->
+        <!-- {{if or (eq .Banner "") (eq .Banner "standard")}}checked{{end}} checks this if Banner is empty or "standard" -->
+        <input type="radio" name="banner" value="standard" {{if or (eq .Banner "") (eq .Banner "standard")}}checked{{end}} />
+        standard
+      </label>
+      <!-- Label wrapping second radio button for shadow banner -->
+      <label>
+        <!-- Radio button for shadow banner -->
+        <!-- {{if eq .Banner "shadow"}}checked{{end}} checks this if Banner equals "shadow" -->
+        <input type="radio" name="banner" value="shadow" {{if eq .Banner "shadow"}}checked{{end}} />
+        shadow
+      </label>
+      <!-- Label wrapping third radio button for thinkertoy banner -->
+      <label>
+        <!-- Radio button for thinkertoy banner -->
+        <!-- {{if eq .Banner "thinkertoy"}}checked{{end}} checks this if Banner equals "thinkertoy" -->
+        <input type="radio" name="banner" value="thinkertoy" {{if eq .Banner "thinkertoy"}}checked{{end}} />
+        thinkertoy
+      </label>
+    </div>
+
+    <!-- Submit button that sends the form data to the server -->
+    <button type="submit">Generate</button>
+  </form>
+
+  <!-- Conditional block: only displays if .Result has content (ASCII art was generated) -->
+  {{if .Result}}
+  <!-- Heading for the results section -->
+  <h2>Result</h2>
+  <!-- Pre-formatted text block that displays the ASCII art result -->
+  <!-- {{.Result}} is Go template syntax that outputs the generated ASCII art -->
+  <!-- The 'pre' tag preserves all spaces and line breaks which are essential for ASCII art -->
+  <pre>{{.Result}}</pre>
+  {{end}}
+</body>
+</html>
