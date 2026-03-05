@@ -2,8 +2,9 @@ package tests
 
 // Import the pipeline module for testing and the testing package for unit tests
 import (
-	"ascii-art/pipeline"
 	"testing"
+
+	"ascii-art/pipeline"
 )
 
 // TestValidateInput_Valid verifies that ValidateInput accepts valid input
@@ -59,5 +60,23 @@ func TestValidateInput_LongInput(t *testing.T) {
 	// Check if no error occurred; if so, report that an error was expected
 	if err == nil {
 		t.Errorf("Expected error for long input, got nil")
+	}
+}
+
+// TestValidateInput_RejectsGreek verifies that non-ASCII letters are rejected.
+func TestValidateInput_RejectsGreek(t *testing.T) {
+	input := "γειά"
+	err := pipeline.ValidateInput(input)
+	if err == nil {
+		t.Errorf("Expected error for Greek input, got nil")
+	}
+}
+
+// TestValidateInput_RejectsEmoji verifies that emoji input is rejected.
+func TestValidateInput_RejectsEmoji(t *testing.T) {
+	input := "hello🙂"
+	err := pipeline.ValidateInput(input)
+	if err == nil {
+		t.Errorf("Expected error for emoji input, got nil")
 	}
 }

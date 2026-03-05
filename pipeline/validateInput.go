@@ -9,7 +9,7 @@ import (
 // ValidateInput checks that the input string meets the following requirements:
 // 1. The input is not empty.
 // 2. The input does not exceed 10,000 runes (characters) in length.
-// 3. The input does not contain control characters other than tab (\t), newline (\n), and carriage return (\r).
+// 3. The input contains only printable ASCII characters (32..126), plus tab/newline/carriage return.
 // If any condition is violated, it returns a non-nil error describing the problem.
 func ValidateInput(input string) error {
 	// Count the total number of runes (Unicode characters) in the input string.
@@ -32,13 +32,13 @@ func ValidateInput(input string) error {
 
 	// Iterate through each rune to validate individual characters
 	for _, r := range input {
-		// If the rune is a control character (codepoint below 32, ASCII 0-31 are non-printable)
-		if r < 32 {
-			// Allow three specific control characters: tab (9), newline (10), and carriage return (13)
-			if r != '\t' && r != '\n' && r != '\r' {
-				// Reject any other control character with formatted error message
-				return fmt.Errorf("invalid control character: 0x%x", r)
-			}
+		// Allow tab/newline/carriage return as line/whitespace controls.
+		if r == '\t' || r == '\n' || r == '\r' {
+			continue
+		}
+		// Reject anything outside printable ASCII to preserve banner lookup behavior.
+		if r < 32 || r > 126 {
+			return fmt.Errorf("invalid character: 0x%x", r)
 		}
 	}
 

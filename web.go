@@ -5,8 +5,8 @@ package main
 import (
 	"errors"        // Functions for error comparison and checking
 	"html/template" // HTML template parsing and execution
-	"net/http"     // HTTP server and request/response handling
-	"os"           // Operating system functions for file error checking
+	"net/http"      // HTTP server and request/response handling
+	"os"            // Operating system functions for file error checking
 
 	"ascii-art/pipeline" // Custom package containing ASCII art rendering logic
 )
@@ -42,7 +42,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if the HTTP method is GET (reject POST, PUT, etc.)
 	if r.Method != http.MethodGet {
 		// Return 400 Bad Request for non-GET methods
-		http.Error(w, "bad request", http.StatusBadRequest)
+		http.Error(w, "400 bad request", http.StatusBadRequest)
 		return
 	}
 
@@ -55,14 +55,14 @@ func asciiArtHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if the HTTP method is POST (reject GET, PUT, etc.)
 	if r.Method != http.MethodPost {
 		// Return 400 Bad Request for non-POST methods
-		http.Error(w, "bad request", http.StatusBadRequest)
+		http.Error(w, "400 bad request", http.StatusBadRequest)
 		return
 	}
 
 	// Parse the form data from the request body
 	if err := r.ParseForm(); err != nil {
 		// Return 400 Bad Request if form parsing fails
-		http.Error(w, "bad request", http.StatusBadRequest)
+		http.Error(w, "400 bad request", http.StatusBadRequest)
 		return
 	}
 
@@ -83,13 +83,13 @@ func asciiArtHandler(w http.ResponseWriter, r *http.Request) {
 		switch {
 		// If error is invalid input or invalid banner, return 400 Bad Request
 		case errors.Is(err, pipeline.ErrInvalidInput), errors.Is(err, pipeline.ErrInvalidBanner):
-			http.Error(w, "bad request", http.StatusBadRequest)
+			http.Error(w, "400 bad request", http.StatusBadRequest)
 		// If error is file not found (banner file missing), return 404 Not Found
 		case errors.Is(err, os.ErrNotExist):
-			http.Error(w, "not found", http.StatusNotFound)
+			http.Error(w, "404 not found", http.StatusNotFound)
 		// For any other unexpected error, return 500 Internal Server Error
 		default:
-			http.Error(w, "internal server error", http.StatusInternalServerError)
+			http.Error(w, "500 internal server error", http.StatusInternalServerError)
 		}
 		return
 	}
@@ -106,11 +106,11 @@ func renderPage(w http.ResponseWriter, data pageData, status int) {
 	if err != nil {
 		// If the template file doesn't exist, return 404 Not Found
 		if errors.Is(err, os.ErrNotExist) {
-			http.Error(w, "not found", http.StatusNotFound)
+			http.Error(w, "404 not found", http.StatusNotFound)
 			return
 		}
 		// For any other template error, return 500 Internal Server Error
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+		http.Error(w, "500 internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -119,7 +119,7 @@ func renderPage(w http.ResponseWriter, data pageData, status int) {
 	// Execute the template with the provided data and write output to response writer
 	if err := tmpl.Execute(w, data); err != nil {
 		// If template execution fails, return 500 Internal Server Error
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+		http.Error(w, "500 internal server error", http.StatusInternalServerError)
 		return
 	}
 }
