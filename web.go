@@ -55,14 +55,14 @@ func asciiArtHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if the HTTP method is POST (reject GET, PUT, etc.)
 	if r.Method != http.MethodPost {
 		// Return 400 Bad Request for non-POST methods
-		http.Error(w, "400bad request", http.StatusBadRequest)
+		http.Error(w, "400 bad request", http.StatusBadRequest)
 		return
 	}
 
 	// Parse the form data from the request body
 	if err := r.ParseForm(); err != nil {
 		// Return 400 Bad Request if form parsing fails
-		http.Error(w, "400bad request", http.StatusBadRequest)
+		http.Error(w, "400 bad request", http.StatusBadRequest)
 		return
 	}
 
@@ -83,7 +83,7 @@ func asciiArtHandler(w http.ResponseWriter, r *http.Request) {
 		switch {
 		// If error is invalid input or invalid banner, return 400 Bad Request
 		case errors.Is(err, pipeline.ErrInvalidInput), errors.Is(err, pipeline.ErrInvalidBanner):
-			http.Error(w, "400bad request", http.StatusBadRequest)
+			http.Error(w, "400 bad request", http.StatusBadRequest)
 		// If error is file not found (banner file missing), return 404 Not Found
 		case errors.Is(err, os.ErrNotExist):
 			http.Error(w, "400 not found", http.StatusNotFound)
@@ -106,7 +106,7 @@ func renderPage(w http.ResponseWriter, data pageData, status int) {
 	if err != nil {
 		// If the template file doesn't exist, return 404 Not Found
 		if errors.Is(err, os.ErrNotExist) {
-			http.Error(w, "404not found", http.StatusNotFound)
+			http.Error(w, "404 not found", http.StatusNotFound)
 			return
 		}
 		// For any other template error, return 500 Internal Server Error

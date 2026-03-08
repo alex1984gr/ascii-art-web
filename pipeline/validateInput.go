@@ -32,16 +32,15 @@ func ValidateInput(input string) error {
 
 	// Iterate through each rune to validate individual characters
 	for _, r := range input {
-		// If the rune is a control character (codepoint below 32, ASCII 0-31 are non-printable)
-		if r < 32 {
-			// Allow three specific control characters: tab (9), newline (10), and carriage return (13)
-			if r != '\t' && r != '\n' && r != '\r' {
-				// Reject any other control character with formatted error message
-				return fmt.Errorf("invalid control character: 0x%x", r)
-			}
+		// Allow tab/newline/carriage return as line/whitespace controls.
+		if r == '\t' || r == '\n' || r == '\r' {
+			continue
+		}
+		// Reject anything outside printable ASCII to preserve banner lookup behavior.
+		if r < 32 || r > 126 {
+			return fmt.Errorf("invalid character: 0x%x", r)
 		}
 	}
-
 	// If all validations passed, return nil to indicate the input is valid
 	return nil
 }
