@@ -9,7 +9,7 @@ import (
 // ValidateInput checks that the input string meets the following requirements:
 // 1. The input is not empty.
 // 2. The input does not exceed 10,000 runes (characters) in length.
-// 3. The input does not contain control characters other than tab (\t), newline (\n), and carriage return (\r).
+// 3. The input contains only printable ASCII characters (32..126), plus tab/newline/carriage return.
 // If any condition is violated, it returns a non-nil error describing the problem.
 func ValidateInput(input string) error {
 	// Count the total number of runes (Unicode characters) in the input string.

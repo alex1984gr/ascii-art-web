@@ -52,13 +52,8 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 
 // asciiArtHandler handles POST requests to generate ASCII art from form data
 func asciiArtHandler(w http.ResponseWriter, r *http.Request) {
-	// Check if the HTTP method is POST (reject GET, PUT, etc.)
-	if r.Method != http.MethodPost {
-		// Return 400 Bad Request for non-POST methods
-		http.Error(w, "400 bad request", http.StatusBadRequest)
-		return
-	}
-
+	// Check if the requested path is exactly "/ascii-art"
+	
 	// Parse the form data from the request body
 	if err := r.ParseForm(); err != nil {
 		// Return 400 Bad Request if form parsing fails
@@ -86,7 +81,7 @@ func asciiArtHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "400 bad request", http.StatusBadRequest)
 		// If error is file not found (banner file missing), return 404 Not Found
 		case errors.Is(err, os.ErrNotExist):
-			http.Error(w, "400 not found", http.StatusNotFound)
+			http.Error(w, "404 not found", http.StatusNotFound)
 		// For any other unexpected error, return 500 Internal Server Error
 		default:
 			http.Error(w, "500 internal server error", http.StatusInternalServerError)
